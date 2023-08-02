@@ -5,18 +5,6 @@ import time
 import smtplib
 from email.message import EmailMessage
 
-urls_to_monitor = [
-    "https://www.levels.fyi/internships/?track=Software%20Engineer&timeframe=Summer%20-%202024",
-    "https://github.com/SimplifyJobs/Summer2024-Internships",
-]
-
-
-def fill(url):
-    get_data = requests.get(url)
-    soup = BeautifulSoup(get_data.content, 'html.parser')
-
-    return str(soup.find('table'))
-
 
 def email(url):
     msg = EmailMessage()
@@ -32,10 +20,23 @@ def email(url):
     server.quit()
 
 
-previous_content = {data: fill(data) for data in urls_to_monitor}
+def fill(url):
+    get_data = requests.get(url)
+    soup = BeautifulSoup(get_data.content, 'html.parser')
+
+    return str(soup.find('table'))
+
+
+def load_urls(file_path="urls.txt"):
+    with open(file_path, 'r') as file:
+        return [line.strip() for line in file.readlines()]
+
+
+previous_content = {data: fill(data) for data in load_urls()}
+
 
 while True:
-    for url in urls_to_monitor:
+    for url in load_urls():
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
 

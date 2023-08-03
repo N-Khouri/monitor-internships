@@ -6,10 +6,11 @@ import requests
 from bs4 import BeautifulSoup
 
 
-def check(dict):
+def check():
     user_key = os.environ.get('USER_KEY')
     api_token = os.environ.get('API_TOKEN')
-    message = f"Up and running. Links on call are: {dict}"
+
+    message = f"Up and running. Links on call are: {load_urls()}"
 
     post_url = "https://api.pushover.net/1/messages.json"
 
@@ -94,7 +95,7 @@ def write_error_to_file_and_send_notification(error_message):
 
 try:
     previous_content = {data: fill(data) for data in load_urls()}
-    check(previous_content)
+    check()
     while True:
         for url in load_urls():
             response = requests.get(url)

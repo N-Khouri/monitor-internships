@@ -4,5 +4,5 @@ services:
   app:
     build: .
     environment:
-      USER_KEY: "${user_key}"
-      API_TOKEN: "${api_token}"
+      USER_KEY: "${USER_KEY}"
+      API_TOKEN: "${API_TOKEN}"

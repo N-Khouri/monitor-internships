@@ -4,4 +4,5 @@ services:
   app:
     build: .
     environment:
-      PASSWD: "${PASSWD}"
+      USER_KEY: "${user_key}"
+      API_TOKEN: "${api_token}"

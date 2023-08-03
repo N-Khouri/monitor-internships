@@ -5,7 +5,7 @@ Internship Monitor is a Python script designed to monitor specified web pages fo
 ## Features
 
 - Monitors a list of URLs for changes.
-- Sends email notifications when changes are detected.
+- Sends push notifications to your phone when changes are detected.
 - Allows dynamic updating of monitored URLs through an external text file.
 - Utilizes BeautifulSoup to parse HTML content.
 
@@ -14,6 +14,7 @@ Internship Monitor is a Python script designed to monitor specified web pages fo
 - Python 3.x
 - BeautifulSoup
 - requests
+- Pushover Application - API key & User Key
 
 ## Installation
 
@@ -25,14 +26,14 @@ Internship Monitor is a Python script designed to monitor specified web pages fo
 ## Usage
 
 1. Add the URLs you want to monitor to a file named urls.txt, with one URL per line.
-2. Set up the email configuration within the script, including the sender's email and password. The password can be set as an environment variable named PASSWD.
+2. Set up the push notification configuration within the script, including the API key and user key. Both should be stored as environment variables named API_TOKEN and USER_KEY, respectively.
 3. Run the script:
     ```bash
    python main.py
    
 ## Configuration
 - URLs: The URLs to be monitored should be added to the urls.txt file.
-- Email: Modify the email function in the script to configure the SMTP settings and recipient details.
+- Notification: Modify the notification function in the script to configure the Pushover settings and recipient details.
 
 ## Notes
 - The script checks the URLs for changes every 3600 seconds (1 hour). You can adjust this interval as needed.

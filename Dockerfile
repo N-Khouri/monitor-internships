@@ -3,10 +3,6 @@ FROM python:3.11
 ENV HOME /root
 WORKDIR /root
 
-ARG PASSWD
-
-ENV PASSWD=$PASSWD
-
 COPY . .
 RUN pip install -r requirements.txt
 

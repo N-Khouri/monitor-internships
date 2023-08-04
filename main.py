@@ -4,6 +4,8 @@ import traceback
 
 import requests
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse
+import difflib
 
 
 def check():
@@ -22,11 +24,21 @@ def check():
     requests.post(post_url, data=data)
 
 
-def send_push_notification(url):
+def send_push_notification(url, new):
     try:
+        parsed_url = urlparse(url)
+        domain = parsed_url.netloc
+        if domain.startswith('www.'):
+            domain = domain[4:]
+        if 'github.com' in domain:
+            path_parts = parsed_url.path.strip('/').split('/')
+            if path_parts:
+                domain = domain + " - " + path_parts[0]
+            url = url[0] + " - " + url[1]
+
         user_key = os.environ.get('USER_KEY')
         api_token = os.environ.get('API_TOKEN')
-        message = f"Change detected on: {url}"
+        message = f"Change detected on: {domain}\nWhat's new: {new}"
 
         post_url = "https://api.pushover.net/1/messages.json"
 
@@ -45,6 +57,13 @@ def send_push_notification(url):
         error_message = f"send_push_notification\n\nError sending notification for URL {url}: " + str(
             notify_error) + "\n" + traceback.format_exc()
         write_error_to_file_and_send_notification(error_message)
+
+
+def whats_new(old, new):
+    differ = difflib.Differ()
+    diffs = list(differ.compare(old, new))
+    new = [diff[2:] for diff in diffs if diff.startswith('+ ')]
+    return ''.join(new)
 
 
 def fill(url):
@@ -92,7 +111,6 @@ def write_error_to_file_and_send_notification(error_message):
         with open("error_log.txt", "a") as file:
             file.write(str(notify_error) + "\n")
 
-
 try:
     previous_content = {data: fill(data) for data in load_urls()}
     check()
@@ -103,7 +121,8 @@ try:
             content_to_monitor = str(soup.find('table'))
 
             if previous_content[url] and content_to_monitor != previous_content[url]:
-                send_push_notification(url)
+                new = whats_new(old=previous_content[url], new=content_to_monitor)
+                send_push_notification(url, new)
 
             previous_content[url] = content_to_monitor
 
